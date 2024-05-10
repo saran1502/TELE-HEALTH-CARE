@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f7f7f7;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        section.chat__section {
+            width: 600px;
+            max-width: 90%;
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .brand {
+            padding: 20px;
+            background: #007bff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand h1 {
+            text-transform: uppercase;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        .message__area {
+            height: 300px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-top: 20px;
+        }
+
+        textarea {
+            width: calc(100% - 42px);
+            border: none;
+            padding: 15px;
+            font-size: 14px;
+            outline: none;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px;
+            max-width: 250px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .incoming {
+            background: #e9e9e9;
+            color: #333;  
+        }
+
+        .outgoing {
+            background: #007bff;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .message h4 {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .send-btn {
+            width: 80px;
+            padding: 15px;
+            border: none;
+            border-radius: 0 10px 10px 0;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <section class="chat__section">
+        <div class="brand">
+            <h1> DOCTOR Chatbot</h1>
+        </div>
+        <div class="message__area" id="chat-box-content">
+            <!-- Messages will be displayed here -->
+        </div>
+        <div>
+            <textarea id="user-input" placeholder="Type your message..."></textarea>
+            <button class="send-btn" id="send-btn">Send</button>
+        </div>
+    </section>
+
+    <script>
+        const medicalData = {
+    "hello": "welcome how can i assist you Buddy",
+     "headache": "Drink plenty of water and rest.",
+     "stomachache": "Avoid spicy and oily foods. Consider taking an antacid.",
+     "fever": "Take acetaminophen or ibuprofen and get plenty of rest.",
+     "sore throat": "Gargle with warm salt water and drink soothing liquids like tea with honey.",
+     "common cold": "Rest, drink fluids, and consider over-the-counter cold medications.",
+     "flu": "Rest, drink plenty of fluids, and take antiviral medications if prescribed by a doctor.",
+     "sinus infection": "Use saline nasal sprays, drink plenty of fluids, and consider over-the-counter decongestants.",
+     "ear infection": "Apply warm compresses to the affected ear and consider over-the-counter pain relievers.",
+     "pink eye": "Use warm compresses and apply artificial tears. Avoid touching or rubbing your eyes.",
+     "bronchitis": "Rest, drink plenty of fluids, and use a humidifier to ease breathing.",
+     "asthma": "Use an inhaler as prescribed by your doctor. Avoid triggers like smoke and allergens.",
+     "pneumonia": "Take prescribed antibiotics, get plenty of rest, and drink fluids.",
+     "allergies": "Avoid allergens, use over-the-counter antihistamines, and consider allergy shots for long-term relief.",
+     "acid reflux": "Avoid trigger foods, eat smaller meals, and consider over-the-counter antacids or prescription medications.",
+     "hypertension ": "Monitor your blood pressure regularly, exercise regularly, and follow a healthy diet low in sodium.",
+     "hypotension ": "Stay hydrated, increase your salt intake slightly, and avoid standing up quickly.",
+     "anemia": "Eat iron-rich foods like spinach and red meat, take iron supplements if prescribed by your doctor.",
+     "diabetes": "Monitor your blood sugar levels regularly, follow a healthy diet, exercise regularly, and take medications as prescribed.",
+     "migraine": "Rest in a quiet, dark room, apply cold compresses to your head, and take prescribed migraine medications.",
+     "gastroenteritis (stomach flu)": "Stay hydrated with clear fluids, eat bland foods, and get plenty of rest.",
+     "food poisoning": "Stay hydrated with clear fluids, rest, and avoid solid foods until symptoms subside.",
+     "appendicitis": "Seek medical attention immediately, as appendicitis requires surgical intervention.",
+     "kidney stones": "Drink plenty of water, take over-the-counter pain medications, and seek medical attention if symptoms worsen.",
+     "urinary tract infection (UTI)": "Drink plenty of water, take prescribed antibiotics, and avoid holding your urine.",
+     "menstrual cramps": "Apply heat to the lower abdomen, take over-the-counter pain relievers, and consider birth control methods for long-term relief.",
+     "heartburn": "Avoid trigger foods, eat smaller meals, and consider over-the-counter antacids or prescription medications.",
+     "dehydration": "Drink plenty of fluids, including water and electrolyte-rich beverages like sports drinks.",
+     // Add more diagnoses and solutions as needed
+                                                                                          
+     };
+
+
+
+        const defaultMessage = "Welcome to the medical chatbot. How can I assist you today?";
+
+        // Function to check if user's message contains any medical diagnosis word
+        function containsMedicalDiagnosis(message) {
+            for (const diagnosis in medicalData) {
+                if (message.toLowerCase().includes(diagnosis)) {
+                    return diagnosis;
+                }
+            }
+            return null;
+        }
+
+        // Function to handle user input and display responses
+        async function handleUserInput() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === "") return;
+
+            displayUserMessage(userInput);
+            
+            // Check if user's message contains any medical diagnosis word
+            const diagnosis = containsMedicalDiagnosis(userInput);
+            if (diagnosis) {
+                const botResponse = medicalData[diagnosis];
+                displayBotMessage(botResponse);
+            } else if (userInput.toLowerCase().includes('hi') || userInput.toLowerCase().includes('hello')) {
+                displayBotMessage("Hello! How can I assist you today?");
+            } else {
+                // If no medical diagnosis word found, use default message
+                displayBotMessage(defaultMessage);
+            }
+            
+            document.getElementById('user-input').value = '';
+        }
+
+        // Function to display user message in the chat box
+        function displayUserMessage(message) {
+            const chatBoxContent = document.getElementById('chat-box-content');
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'outgoing');
+            userMessage.textContent = message;
+            chatBoxContent.appendChild(userMessage);
+        }
+
+        // Function to display bot message in the chat box
+        function displayBotMessage(message) {
+            const chatBoxContent = document.getElementById('chat-box-content');
+            const botMessage = document.createElement('div');
+            botMessage.classList.add('message', 'incoming');
+            botMessage.textContent = message;
+            chatBoxContent.appendChild(botMessage);
+        }
+
+        // Event listener for send button
+        document.getElementById('send-btn').addEventListener('click', handleUserInput);
+
+        // Event listener for pressing Enter key
+        document.getElementById('user-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleUserInput();
+            }
+        });
+    </script>
+</body>
+</html>

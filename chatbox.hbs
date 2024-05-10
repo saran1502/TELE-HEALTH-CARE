@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHATBOT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            width: 90%; /* Reduced width */
+            max-width: 500px; /* Adjusted max-width */
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: #0099FF;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .chat-body {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f6f6f6;
+        }
+
+        .message {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            max-width: 70%;
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: #DCF8C6;
+            margin-left: auto;
+        }
+
+        .doctor-message {
+            text-align: left;
+            background-color: #E6E6E6;
+            margin-right: auto;
+        }
+
+        .chat-input {
+            width: calc(100% - 20px); /* Reduced width */
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+            border-radius: 0 0 10px 10px;
+            outline: none;
+            margin: 0;
+        }
+
+        .button {
+            background-color: #0099FF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #0077CC;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">MR-CHATBOT</div>
+    <div class="chat-body" id="chat-body">
+        <div class="message doctor-message">Hello! How can I assist you today?</div>
+    </div>
+    <input type="text" class="chat-input" placeholder="Type your message..." id="user-input">
+</div>
+
+<script>
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input');
+    let context = null;
+
+    userInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const userMessage = userInput.value;
+        if (userMessage.trim() === '') return;
+
+        const userMessageElement = document.createElement('div');
+        userMessageElement.classList.add('message', 'user-message');
+        userMessageElement.textContent = userMessage;
+        chatBody.appendChild(userMessageElement);
+
+        // Get doctor's response based on user query
+        const doctorResponse = getDoctorResponse(userMessage);
+        const doctorResponseElement = document.createElement('div');
+        doctorResponseElement.classList.add('message', 'doctor-message');
+        doctorResponseElement.textContent = doctorResponse.text;
+        chatBody.appendChild(doctorResponseElement);
+
+        // Clear user input
+        userInput.value = '';
+
+        // Update context for multi-turn conversation
+        context = doctorResponse.context;
+
+        // Scroll to bottom
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function getDoctorResponse(userMessage) {
+        // List of predefined patterns and responses
+        const responses = [
+    // Existing patterns and responses
+    { pattern: /hello|hi|hey/i, response: "Hello! How can I help you today?" },
+    { pattern: /headache/i, response: "I recommend taking some rest and drinking plenty of water. If the headache persists, please consult a doctor." },
+    // Additional patterns and responses
+    { pattern: /fever/i, response: "Rest, stay hydrated, and take over-the-counter fever reducers like acetaminophen or ibuprofen. If the fever is persistent or accompanied by other symptoms, consult a doctor." },
+    { pattern: /cough/i, response: "Stay hydrated and consider over-the-counter cough medicine. If the cough persists or worsens, consult a doctor." },
+    { pattern: /stomach ache|stomach pain/i, response: "Avoid heavy or spicy foods and try drinking herbal tea. If the pain continues, consult a doctor." },
+    { pattern: /sore throat/i, response: "Gargle with warm salt water and drink plenty of fluids. If the sore throat persists, consult a doctor." },
+    { pattern: /fatigue/i, response: "Make sure you are getting enough sleep and try to maintain a healthy diet and exercise routine. If fatigue persists, consult a doctor." },
+    { pattern: /difficulty breathing/i, response: "If you are experiencing difficulty breathing, seek medical attention immediately. Call emergency services or go to the nearest emergency room." },
+    { pattern: /chest pain/i, response: "Chest pain can be a sign of a serious medical condition. Seek immediate medical attention by calling emergency services or going to the nearest emergency room." },
+    { pattern: /rash/i, response: "Avoid scratching the rash and apply a mild, soothing lotion. If the rash is severe or accompanied by other symptoms, consult a doctor." },
+    { pattern: /vomiting/i, response: "Stay hydrated by sipping water or electrolyte drinks. Avoid solid foods until vomiting subsides. If vomiting persists for more than 24 hours or is accompanied by other symptoms, consult a doctor." },
+    { pattern: /diarrhea/i, response: "Stay hydrated by drinking clear fluids and avoiding dairy, caffeine, and fatty foods. If diarrhea persists for more than a few days or is accompanied by other symptoms, consult a doctor." },
+    { pattern: /muscle pain/i, response: "Apply a warm compress to the affected area and consider taking over-the-counter pain relievers. If muscle pain persists or is severe, consult a doctor." },
+    { pattern: /joint pain/i, response: "Rest the affected joint and apply ice packs to reduce swelling. Over-the-counter pain relievers may also help. If joint pain is severe or persistent, consult a doctor." },
+    { pattern: /dizziness/i, response: "Sit or lie down in a comfortable position and drink water. Avoid sudden movements. If dizziness persists or is accompanied by other symptoms, consult a doctor." },
+    { pattern: /anxiety/i, response: "Practice deep breathing exercises and consider mindfulness or relaxation techniques. If anxiety is interfering with your daily life, consult a mental health professional." },
+    { pattern: /depression/i, response: "Engage in activities you enjoy and reach out to supportive friends or family members. If you are experiencing persistent sadness or loss of interest in activities, consult a mental health professional." },
+    { pattern: /insomnia/i, response: "Establish a regular sleep schedule and create a relaxing bedtime routine. Avoid caffeine and electronic devices before bedtime. If insomnia persists, consult a doctor." },
+    { pattern: /stress/i, response: "Practice stress management techniques such as deep breathing, meditation, or yoga. Engage in activities that bring you joy and consider talking to a therapist or counselor for additional support." },
+    { pattern: /panic attack/i, response: "Focus on deep breathing and grounding techniques to help calm yourself during a panic attack. Consider seeking therapy or counseling to learn coping strategies for managing panic attacks." },
+    { pattern: /trauma/i, response: "Seek support from a therapist or counselor who specializes in trauma therapy. Take care of yourself by engaging in self-care activities and practicing relaxation techniques." },
+    { pattern: /self-esteem issues/i, response: "Challenge negative thoughts and practice self-compassion. Engage in activities that make you feel confident and capable. Consider seeking support from a therapist or counselor to explore underlying issues." },
+    { pattern: /loneliness/i, response: "Reach out to friends or family members for support and connection. Engage in activities that bring you joy and consider joining social groups or clubs to meet new people. If loneliness persists, consider speaking with a therapist or counselor." },
+    { pattern: /relationship issues/i, response: "Communicate openly and honestly with your partner about your concerns and feelings. Consider seeking couples therapy or counseling to work through relationship challenges together." },
+    { pattern: /anger management/i, response: "Practice relaxation techniques such as deep breathing or meditation when you feel angry. Consider seeking therapy or counseling to learn healthy ways of expressing and managing anger." },
+    { pattern: /substance abuse/i, response: "Seek support from a therapist or counselor who specializes in substance abuse treatment. Consider joining a support group such as Alcoholics Anonymous or Narcotics Anonymous for additional support." },
+    { pattern: /eating disorders/i, response: "Seek support from a therapist or counselor who specializes in eating disorder treatment. Focus on developing a healthy relationship with food and your body, and consider joining a support group for individuals with eating disorders." },
+    // Add more patterns and responses as needed
+    { pattern: /bye|goodbye/i, response: "Goodbye! Have a great day." }
+    ];
+
+    // Add more patterns and responses as needed
+     
+
+
+        // Find matching response for user message
+        const matchedResponse = responses.find(item => item.pattern.test(userMessage));
+
+        // If no match found, return default response
+        if (!matchedResponse) {
+            return { text: "I'm sorry, I didn't understand that.", context: null };
+        }
+
+        return { text: matchedResponse.response, context: null };
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+/* Global Styles */
+npm cache clean --force
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Styles */
+.header {
+    background: linear-gradient(to right, #ff8a00, #e52e71);
+    color: #fff;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Form Styles */
+.form-container {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    margin-top: 40px;
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-container input[type="file"] {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    width: calc(100% - 30px);
+}
+
+.form-container button {
+    padding: 15px 30px;
+    background: linear-gradient(to right, #ff8a00, #e52e71);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+    background: linear-gradient(to right, #e52e71, #ff8a00);
+}
+
+/* Result Styles */
+.result-container {
+    margin-top: 40px;
+}
+
+.result {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    animation: fadeIn 1s ease;
+}
+
+.result h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #e52e71;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.result p {
+    font-size: 1.2em;
+    text-align: center;
+    line-height: 1.6;
+}

@@ -1,0 +1,83 @@
+/* Reset default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #080808;
+    background-image: linear-gradient(200deg, #7956cb, #ab65f0);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background:  #7956cb, #ab65f0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    padding: 10px;
+    background-color: #f8f4f4;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.menu a {
+    text-decoration: none;
+    color: #ffffff;
+    margin-left: 20px;
+}
+
+.carousel-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel {
+    background: #ffffff;
+    width: 400px;
+    padding: 30px;
+    box-shadow: 0 50px 150px hsla(0, 3%, 8%, 0.923);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+}
+
+.carousel h2 {
+    margin: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.carousel img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.carousel h3 {
+    margin: 0;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.carousel h3:last-child {
+    margin-bottom: 20px;
+}
